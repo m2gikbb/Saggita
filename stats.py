@@ -15,4 +15,23 @@ def print_users_top_tracks(time_range='medium_term'):
         formatted_list = list(map(lambda item: f"{item['popularity']} {item['artists'][0]['name']} - {item['name']}",sorted_list))
         pprint(formatted_list)
 
-print_users_top_tracks('long_term')
+def print_all_plalists():
+    """Print all playlist of current user."""
+    file_name_counter = 1
+    items = []
+    while True:        
+        try:
+            with open(f'data/get-a-list-of-current-users-playlists_part_{file_name_counter}.json') as fp:
+                data = json.load(fp)
+                items += data['items']
+                file_name_counter += 1
+        except (OSError, IOError) as e:
+            break
+    
+    sorted_list = sorted(items, key=lambda x: x['tracks']['total'],reverse=True) 
+    formatted_list = list(map(lambda item: f"{item['name']} by {item['owner']['display_name']} contains {item['tracks']['total']} tracks",sorted_list))
+    pprint(formatted_list)
+    print(f'Total # of playlists {len(items)}')
+
+# print_users_top_tracks('long_term')
+print_all_plalists()
