@@ -1,7 +1,25 @@
 import json
 from pprint import pprint
 from operator import itemgetter
+import argparse
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
+parser = argparse.ArgumentParser()
+parser.add_argument("spotify_client_id")
+parser.add_argument("spotify_client_secret")
+parser.add_argument("redirect_uri")
+args = parser.parse_args()
+
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=args.spotify_client_id,
+                                               client_secret=args.spotify_client_secret,
+                                               redirect_uri=args.redirect_uri,
+                                               scope="user-library-read"))
+def current_user_saved_tracks():
+    results = sp.current_user_saved_tracks(limit=50)
+    for idx, item in enumerate(results['items']):
+        track = item['track']
+        print(idx, track['artists'][0]['name'], " – ", track['name'])
 
 def print_users_top_tracks(time_range='medium_term'):
     """Print sorted list of most popular tracks played by user.
@@ -34,4 +52,5 @@ def print_all_plalists():
     print(f'Total # of playlists {len(items)}')
 
 # print_users_top_tracks('long_term')
-print_all_plalists()
+# print_all_plalists()
+current_user_saved_tracks()

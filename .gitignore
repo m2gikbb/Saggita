@@ -1,2 +1,4 @@
 data/
 .venv/
+.cache
+run.sh
