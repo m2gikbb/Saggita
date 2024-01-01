@@ -51,6 +51,21 @@ def print_all_plalists():
     pprint(formatted_list)
     print(f'Total # of playlists {len(items)}')
 
+def show_featured_playlists():
+    response = sp.featured_playlists()
+    print(response['message'])
+
+    while response:
+        playlists = response['playlists']
+        for i, item in enumerate(playlists['items']):
+            print(playlists['offset'] + i, item['name'])
+
+        if playlists['next']:
+            response = sp.next(playlists)
+        else:
+            response = None
+
 # print_users_top_tracks('long_term')
 # print_all_plalists()
-current_user_saved_tracks()
+# current_user_saved_tracks()
+show_featured_playlists()
