@@ -5,6 +5,8 @@ import argparse
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+__version__ = "0.0.1"
+
 parser = argparse.ArgumentParser()
 parser.add_argument("spotify_client_id")
 parser.add_argument("spotify_client_secret")
@@ -64,6 +66,9 @@ def show_featured_playlists():
             response = sp.next(playlists)
         else:
             response = None
+
+def main():
+    print('Saggita module initialized')
 
 # print_users_top_tracks('long_term')
 # print_all_plalists()
