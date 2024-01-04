@@ -1,3 +1,4 @@
+import logging
 import json
 from pprint import pprint
 from operator import itemgetter
@@ -5,13 +6,17 @@ import argparse
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("spotify_client_id")
 parser.add_argument("spotify_client_secret")
 parser.add_argument("redirect_uri")
 args = parser.parse_args()
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=args.spotify_client_id,
                                                client_secret=args.spotify_client_secret,
@@ -53,8 +58,16 @@ def print_all_plalists():
     pprint(formatted_list)
     print(f'Total # of playlists {len(items)}')
 
+def log_and_execute(func):
+    def wrapper(*args, **kwargs):
+        logger.debug(f"Wrapper: Execution of {func.__name__}")   
+        result = func(*args, **kwargs)
+        logger.debug("Results %s",result)
+        return result 
+    return wrapper
+
 def show_featured_playlists():
-    response = sp.featured_playlists()
+    response = log_and_execute(sp.featured_playlists)()
     print(response['message'])
 
     while response:
@@ -67,10 +80,8 @@ def show_featured_playlists():
         else:
             response = None
 
+
+
 def main():
     print('Saggita module initialized')
-
-# print_users_top_tracks('long_term')
-# print_all_plalists()
-# current_user_saved_tracks()
-show_featured_playlists()
+    show_featured_playlists()
